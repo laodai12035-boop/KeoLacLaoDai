@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đặt Hàng – Kẹo Lạc Lão Đại</title>
+  <meta name="description" content="Đặt mua kẹo lạc truyền thống Lão Đại – giao hàng tận nơi toàn quốc. Điền form nhanh, xác nhận ngay." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥜</text></svg>" />
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <span class="logo-icon">🥜</span>
+    <span>Kẹo Lạc Lão Đại<span class="brand-sub">Gia truyền từ năm 1985</span></span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Trang chủ</a></li>
+    <li><a href="products.html">Sản phẩm</a></li>
+    <li><a href="order.html" class="active">Đặt hàng</a></li>
+    <li><a href="my-orders.html">Đơn của tôi</a></li>
+    <li><a href="order.html" class="nav-cta">🛒 Mua ngay</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== PAGE HERO ===== -->
+<div class="page-inner-hero">
+  <span class="section-badge">Đặt hàng nhanh</span>
+  <h1 class="section-title">Điền Thông Tin Nhận Hàng</h1>
+  <p class="section-desc">Chúng tôi sẽ liên hệ xác nhận trong vòng 30 phút – giao hàng tận nơi toàn quốc</p>
+  <div class="breadcrumb">
+    <a href="index.html">Trang chủ</a>
+    <span>›</span>
+    <a href="products.html">Sản phẩm</a>
+    <span>›</span>
+    <span style="color:var(--gold-light);">Đặt hàng</span>
+  </div>
+</div>
+
+<!-- ===== ORDER FORM ===== -->
+<section class="order-page">
+  <div class="container">
+    <div class="order-layout">
+
+      <!-- FORM COLUMN -->
+      <div>
+        <div class="form-card reveal">
+          <h2>Thông tin khách hàng</h2>
+          <p class="subtitle">Thông tin của bạn được bảo mật tuyệt đối 🔒</p>
+
+          <form id="orderForm" novalidate>
+
+            <!-- Name & Phone -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="customerName">Họ và tên <span>*</span></label>
+                <input type="text" id="customerName" class="form-control" placeholder="Nguyễn Văn A" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="customerPhone">Số điện thoại <span>*</span></label>
+                <input type="tel" id="customerPhone" class="form-control" placeholder="0912.345.678" required pattern="[0-9]{10,11}" />
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+              <label class="form-label" for="customerAddress">Địa chỉ giao hàng <span>*</span></label>
+              <input type="text" id="customerAddress" class="form-control" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành..." required />
+            </div>
+
+            <!-- Note -->
+            <div class="form-group">
+              <label class="form-label" for="customerNote">Ghi chú đơn hàng</label>
+              <textarea id="customerNote" class="form-control" rows="2" placeholder="Gói quà, yêu cầu đặc biệt, thời gian nhận hàng..."></textarea>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- PRODUCT SELECTION -->
+        <div class="form-card reveal" style="margin-top:1.5rem;">
+          <h2>Chọn sản phẩm</h2>
+          <p class="subtitle">Nhấn vào sản phẩm để chọn, có thể chọn nhiều loại</p>
+
+          <div id="productOptionList" class="product-select-grid"></div>
+
+          <div class="form-group" style="margin-top:1.5rem;">
+            <label class="form-label">Số lượng <span>*</span></label>
+            <div class="qty-control">
+              <button class="qty-btn" id="qtyMinus" aria-label="Giảm">−</button>
+              <input type="number" class="qty-input" id="qtyInput" value="1" min="1" max="99" />
+              <button class="qty-btn" id="qtyPlus" aria-label="Tăng">+</button>
+            </div>
+          </div>
+
+          <!-- Payment method -->
+          <div class="form-group">
+            <label class="form-label">Phương thức thanh toán</label>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.5rem;">
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Be Vietnam Pro',sans-serif; font-size:0.9rem; color:var(--text-soft);">
+                <input type="radio" name="payment" value="cod" checked /> 💵 Thanh toán khi nhận hàng (COD)
+              </label>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Be Vietnam Pro',sans-serif; font-size:0.9rem; color:var(--text-soft);">
+                <input type="radio" name="payment" value="transfer" /> 🏦 Chuyển khoản ngân hàng
+              </label>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-full" id="submitOrder" style="margin-top:1rem; padding:16px;">
+            🛒 Xác nhận đặt hàng
+          </button>
+        </div>
+      </div>
+
+      <!-- SUMMARY COLUMN -->
+      <div>
+        <div class="order-summary-card reveal reveal-delay-1">
+          <h3 class="summary-title">📋 Tóm tắt đơn hàng</h3>
+          <div id="summaryProduct" class="summary-row">
+            <span>Sản phẩm</span>
+            <span id="summaryProductName" style="text-align:right; max-width:60%; font-weight:500; color:var(--text-main);">Chưa chọn</span>
+          </div>
+          <div class="summary-row">
+            <span>Số lượng</span>
+            <span id="summaryQty">1</span>
+          </div>
+          <div class="summary-row">
+            <span>Đơn giá</span>
+            <span id="summaryUnitPrice">—</span>
+          </div>
+          <div class="summary-row">
+            <span>Phí vận chuyển</span>
+            <span id="summaryShipping" style="color:var(--moss);">30.000đ</span>
+          </div>
+          <div class="summary-row" id="summaryDiscountRow" style="display:none;">
+            <span>Giảm phí ship</span>
+            <span style="color:var(--moss);">−30.000đ</span>
+          </div>
+          <div class="summary-row total">
+            <span>Tổng cộng</span>
+            <strong id="summaryTotal">—</strong>
+          </div>
+
+          <div class="trust-badges">
+            <div class="trust-item"><span class="icon">🚚</span> Giao hàng toàn quốc 2–5 ngày</div>
+            <div class="trust-item"><span class="icon">✅</span> Miễn phí ship đơn từ 200.000đ</div>
+            <div class="trust-item"><span class="icon">🔄</span> Đổi trả trong 7 ngày</div>
+            <div class="trust-item"><span class="icon">📞</span> Hỗ trợ 8:00–17:00 mỗi ngày</div>
+          </div>
+        </div>
+
+        <!-- Preview Image -->
+        <div class="reveal reveal-delay-2" style="margin-top:1.5rem; border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+          <img id="previewImg" src="assets/products_flatlay.png" alt="Preview sản phẩm" style="width:100%;height:200px;object-fit:cover;filter:sepia(8%);transition:all 0.4s ease;" />
+        </div>
+
+        <!-- Bank Transfer Info (hidden by default) -->
+        <div class="form-card reveal reveal-delay-3" id="bankInfo" style="margin-top:1.5rem; display:none;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown-deep);margin-bottom:1rem;">🏦 Thông tin chuyển khoản</h3>
+          <div class="detail-row" style="display:flex;justify-content:space-between;font-family:'Be Vietnam Pro',sans-serif;font-size:0.88rem;padding:0.4rem 0;border-bottom:1px dashed var(--border);">
+            <span style="color:var(--text-muted);">Ngân hàng</span><span style="font-weight:600;">Vietcombank</span>
+          </div>
+          <div class="detail-row" style="display:flex;justify-content:space-between;font-family:'Be Vietnam Pro',sans-serif;font-size:0.88rem;padding:0.4rem 0;border-bottom:1px dashed var(--border);">
+            <span style="color:var(--text-muted);">STK</span><span style="font-weight:600; color:var(--gold);">1234 5678 9012</span>
+          </div>
+          <div class="detail-row" style="display:flex;justify-content:space-between;font-family:'Be Vietnam Pro',sans-serif;font-size:0.88rem;padding:0.4rem 0;">
+            <span style="color:var(--text-muted);">Chủ TK</span><span style="font-weight:600;">NGUYEN THI MAI</span>
+          </div>
+          <p style="font-family:'Lora',serif;font-style:italic;font-size:0.82rem;color:var(--text-muted);margin-top:0.75rem;">Nội dung CK: [Tên] – [SĐT] – đặt kẹo</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUCCESS MODAL ===== -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box">
+    <div class="modal-icon">🎉</div>
+    <h3>Đặt hàng thành công!</h3>
+    <p>Cảm ơn bạn đã tin tưởng Kẹo Lạc Lão Đại.<br />Mã đơn hàng của bạn:</p>
+    <span class="modal-order-id" id="modalOrderId"></span>
+    <p style="font-size:0.85rem;">Chúng tôi sẽ gọi điện xác nhận trong <strong>30 phút</strong>.</p>
+    <div class="modal-actions" style="margin-top:1.5rem;">
+      <a href="my-orders.html" class="btn btn-dark btn-sm">📋 Xem đơn hàng</a>
+      <button class="btn btn-moss btn-sm" onclick="closeModal()">Tiếp tục mua</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="margin-bottom:1rem; display:inline-flex;">
+          <span class="logo-icon">🥜</span>
+          <span>Kẹo Lạc Lão Đại<span class="brand-sub">Gia truyền từ năm 1985</span></span>
+        </a>
+        <p>Hơn 40 năm gìn giữ hương vị kẹo lạc truyền thống Việt Nam.</p>
+      </div>
+      <div class="footer-col"><h4>Điều hướng</h4><ul>
+        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="products.html">🥜 Sản phẩm</a></li>
+        <li><a href="order.html">🛒 Đặt hàng</a></li>
+        <li><a href="my-orders.html">📋 Đơn của tôi</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Liên hệ</h4><ul>
+        <li><a href="#">📍 Làng Đa Sĩ, Hà Đông, Hà Nội</a></li>
+        <li><a href="tel:0912345678">📞 0912.345.678</a></li>
+        <li><a href="mailto:keolac@laodai.vn">✉️ keolac@laodai.vn</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Hỗ trợ</h4><ul>
+        <li><a href="#">Chính sách đổi trả</a></li>
+        <li><a href="#">Hướng dẫn đặt hàng</a></li>
+        <li><a href="#">Câu hỏi thường gặp</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Kẹo Lạc Lão Đại.</span>
+      <span>Thiết kế với ❤️ từ làng quê Việt Nam</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/orders-db.js"></script>
+<script src="js/products.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // ── State ──
+  let selectedProductId = sessionStorage.getItem('quickBuyProduct') || null;
+  let quantity = 1;
+  const FREE_SHIP_THRESHOLD = 200000;
+  const SHIP_FEE = 30000;
+
+  // ── Render product options ──
+  function renderProductOptions() {
+    const container = document.getElementById('productOptionList');
+    container.innerHTML = window.PRODUCTS.map(p => `
+      <div class="product-option ${selectedProductId === p.id ? 'selected' : ''}"
+           data-id="${p.id}" onclick="selectProductOption('${p.id}')">
+        <div class="opt-name">${p.name}</div>
+        <div class="opt-price">${p.variant} · ${formatPrice(p.price)}</div>
+      </div>
+    `).join('');
+  }
+
+  function selectProductOption(id) {
+    selectedProductId = id;
+    document.querySelectorAll('.product-option').forEach(el => {
+      el.classList.toggle('selected', el.dataset.id === id);
+    });
+    updateSummary();
+    // Update preview image
+    const p = window.PRODUCTS.find(p => p.id === id);
+    if (p) {
+      const img = document.getElementById('previewImg');
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = p.img;
+        img.style.objectPosition = p.imgPos;
+        img.style.opacity = '1';
+      }, 200);
+    }
+  }
+
+  // ── Quantity ──
+  document.getElementById('qtyMinus').addEventListener('click', () => {
+    if (quantity > 1) { quantity--; document.getElementById('qtyInput').value = quantity; updateSummary(); }
+  });
+  document.getElementById('qtyPlus').addEventListener('click', () => {
+    if (quantity < 99) { quantity++; document.getElementById('qtyInput').value = quantity; updateSummary(); }
+  });
+  document.getElementById('qtyInput').addEventListener('change', e => {
+    quantity = Math.max(1, Math.min(99, parseInt(e.target.value) || 1));
+    e.target.value = quantity;
+    updateSummary();
+  });
+
+  // ── Payment method toggle ──
+  document.querySelectorAll('input[name="payment"]').forEach(radio => {
+    radio.addEventListener('change', e => {
+      document.getElementById('bankInfo').style.display = e.target.value === 'transfer' ? 'block' : 'none';
+    });
+  });
+
+  // ── Update summary ──
+  function updateSummary() {
+    const product = selectedProductId ? window.PRODUCTS.find(p => p.id === selectedProductId) : null;
+    const nameEl = document.getElementById('summaryProductName');
+    const unitEl = document.getElementById('summaryUnitPrice');
+    const qtyEl = document.getElementById('summaryQty');
+    const totalEl = document.getElementById('summaryTotal');
+    const shipEl = document.getElementById('summaryShipping');
+    const discEl = document.getElementById('summaryDiscountRow');
+
+    qtyEl.textContent = quantity;
+
+    if (!product) {
+      nameEl.textContent = 'Chưa chọn';
+      unitEl.textContent = '—';
+      totalEl.textContent = '—';
+      shipEl.textContent = `${formatPrice(SHIP_FEE)}`;
+      discEl.style.display = 'none';
+      return;
+    }
+
+    const subtotal = product.price * quantity;
+    const freeShip = subtotal >= FREE_SHIP_THRESHOLD;
+    const total = subtotal + (freeShip ? 0 : SHIP_FEE);
+
+    nameEl.textContent = `${product.name} ${product.variant}`;
+    unitEl.textContent = formatPrice(product.price);
+    shipEl.textContent = formatPrice(SHIP_FEE);
+    discEl.style.display = freeShip ? 'flex' : 'none';
+    totalEl.textContent = formatPrice(total);
+  }
+
+  // ── Form validation ──
+  function validateForm() {
+    const name = document.getElementById('customerName').value.trim();
+    const phone = document.getElementById('customerPhone').value.trim();
+    const addr = document.getElementById('customerAddress').value.trim();
+
+    if (!name) { showToast('Vui lòng nhập họ tên!', 'error'); document.getElementById('customerName').focus(); return false; }
+    if (!phone || !/^[0-9]{10,11}$/.test(phone.replace(/[\s.]/g, ''))) {
+      showToast('Số điện thoại không hợp lệ!', 'error');
+      document.getElementById('customerPhone').focus();
+      return false;
+    }
+    if (!addr) { showToast('Vui lòng nhập địa chỉ giao hàng!', 'error'); document.getElementById('customerAddress').focus(); return false; }
+    if (!selectedProductId) { showToast('Vui lòng chọn sản phẩm!', 'error'); return false; }
+    return true;
+  }
+
+  // ── Submit order ──
+  document.getElementById('submitOrder').addEventListener('click', () => {
+    if (!validateForm()) return;
+
+    const product = window.PRODUCTS.find(p => p.id === selectedProductId);
+    const name = document.getElementById('customerName').value.trim();
+    const phone = document.getElementById('customerPhone').value.trim();
+    const address = document.getElementById('customerAddress').value.trim();
+    const note = document.getElementById('customerNote').value.trim();
+    const payment = document.querySelector('input[name="payment"]:checked').value;
+
+    const subtotal = product.price * quantity;
+    const freeShip = subtotal >= FREE_SHIP_THRESHOLD;
+    const total = subtotal + (freeShip ? 0 : SHIP_FEE);
+
+    const order = {
+      id: window.OrderDB.generateOrderId(),
+      date: new Date().toISOString(),
+      status: 'processing',
+      name,
+      phone,
+      address,
+      note,
+      payment,
+      productId: product.id,
+      productName: product.name,
+      productVariant: product.variant,
+      unitPrice: product.price,
+      quantity,
+      subtotal,
+      shippingFee: freeShip ? 0 : SHIP_FEE,
+      total,
+    };
+
+    window.OrderDB.saveOrder(order);
+
+    // Animate button
+    const btn = document.getElementById('submitOrder');
+    btn.textContent = '⏳ Đang xử lý...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      // Show success modal
+      document.getElementById('modalOrderId').textContent = order.id;
+      document.getElementById('successModal').classList.add('show');
+      sessionStorage.removeItem('quickBuyProduct');
+
+      // Reset form
+      document.getElementById('orderForm').reset();
+      selectedProductId = null;
+      quantity = 1;
+      document.getElementById('qtyInput').value = 1;
+      document.querySelectorAll('.product-option').forEach(el => el.classList.remove('selected'));
+      updateSummary();
+      btn.textContent = '🛒 Xác nhận đặt hàng';
+      btn.disabled = false;
+    }, 900);
+  });
+
+  function closeModal() {
+    document.getElementById('successModal').classList.remove('show');
+  }
+
+  // ── Init ──
+  renderProductOptions();
+  updateSummary();
+
+  // Pre-select if came from quick buy
+  if (selectedProductId) {
+    selectProductOption(selectedProductId);
+  }
+</script>
+</body>
+</html>

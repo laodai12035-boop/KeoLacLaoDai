@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đơn Hàng Của Tôi – Kẹo Lạc Lão Đại</title>
+  <meta name="description" content="Theo dõi trạng thái đơn hàng kẹo lạc của bạn – lịch sử mua hàng, mã đơn, tổng tiền." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥜</text></svg>" />
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <span class="logo-icon">🥜</span>
+    <span>Kẹo Lạc Lão Đại<span class="brand-sub">Gia truyền từ năm 1985</span></span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Trang chủ</a></li>
+    <li><a href="products.html">Sản phẩm</a></li>
+    <li><a href="order.html">Đặt hàng</a></li>
+    <li><a href="my-orders.html" class="active">Đơn của tôi</a></li>
+    <li><a href="order.html" class="nav-cta">🛒 Mua ngay</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== PAGE HERO ===== -->
+<div class="orders-page-hero">
+  <span class="section-badge">Quản lý đơn hàng</span>
+  <h1 class="section-title">Đơn Hàng Của Tôi</h1>
+  <div class="breadcrumb">
+    <a href="index.html">Trang chủ</a>
+    <span>›</span>
+    <span style="color:rgba(255,255,255,0.9);">Đơn hàng</span>
+  </div>
+</div>
+
+<!-- ===== ORDERS DASHBOARD ===== -->
+<section class="orders-page">
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="orders-stats-bar reveal">
+      <div class="stat-card gold">
+        <div class="stat-icon">📦</div>
+        <div class="stat-info">
+          <span class="num" id="statTotal">0</span>
+          <span class="lbl">Tổng đơn hàng</span>
+        </div>
+      </div>
+      <div class="stat-card moss">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <span class="num" id="statDelivered">0</span>
+          <span class="lbl">Đã giao thành công</span>
+        </div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">🚚</div>
+        <div class="stat-info">
+          <span class="num" id="statProcessing">0</span>
+          <span class="lbl">Đang xử lý</span>
+        </div>
+      </div>
+      <div class="stat-card brown">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <span class="num" id="statSpent">0đ</span>
+          <span class="lbl">Tổng chi tiêu</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="orders-toolbar reveal">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên, SĐT, mã đơn..." />
+      </div>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <select id="statusFilter" class="form-control" style="width:auto; padding:8px 14px;">
+          <option value="all">Tất cả trạng thái</option>
+          <option value="processing">Đang xử lý</option>
+          <option value="confirmed">Đã xác nhận</option>
+          <option value="shipping">Đang giao</option>
+          <option value="delivered">Đã giao</option>
+          <option value="cancelled">Đã hủy</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="seedSampleOrders()" id="seedBtn">✨ Tạo đơn mẫu</button>
+        <button class="btn btn-sm" style="background:var(--bg-alt);border:1px solid var(--border);color:var(--text-soft);" onclick="exportCSV()">📥 Xuất CSV</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="orders-table-wrap reveal">
+      <div id="ordersContent">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3>Chưa có đơn hàng nào</h3>
+          <p>Đặt mua kẹo lạc ngay để thấy lịch sử đơn hàng của bạn tại đây.</p>
+          <a href="order.html" class="btn btn-primary btn-sm" style="margin-top:1.5rem; display:inline-flex;">🛒 Đặt ngay</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== ORDER DETAIL PANEL ===== -->
+<div class="panel-backdrop" id="panelBackdrop" onclick="closePanel()"></div>
+<div class="slide-panel" id="slidePanel">
+  <div class="panel-header">
+    <h3>Chi tiết đơn hàng</h3>
+    <button class="close-panel" onclick="closePanel()">✕</button>
+  </div>
+  <div id="panelContent"></div>
+</div>
+
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box">
+    <div class="modal-icon">⚠️</div>
+    <h3>Xác nhận huỷ đơn?</h3>
+    <p>Đơn hàng <strong id="deleteOrderId"></strong> sẽ bị huỷ và không thể hoàn tác.</p>
+    <div class="modal-actions" style="margin-top:1.5rem;">
+      <button class="btn btn-sm" style="background:var(--bg-alt);border:1px solid var(--border);color:var(--text-soft);" onclick="closeDeleteModal()">Quay lại</button>
+      <button class="btn btn-sm" style="background:#C0392B;color:white;" onclick="confirmDelete()">Huỷ đơn</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="margin-bottom:1rem; display:inline-flex;">
+          <span class="logo-icon">🥜</span>
+          <span>Kẹo Lạc Lão Đại<span class="brand-sub">Gia truyền từ năm 1985</span></span>
+        </a>
+        <p>Hơn 40 năm gìn giữ hương vị kẹo lạc truyền thống Việt Nam.</p>
+      </div>
+      <div class="footer-col"><h4>Điều hướng</h4><ul>
+        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="products.html">🥜 Sản phẩm</a></li>
+        <li><a href="order.html">🛒 Đặt hàng</a></li>
+        <li><a href="my-orders.html">📋 Đơn của tôi</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Liên hệ</h4><ul>
+        <li><a href="#">📍 Làng Đa Sĩ, Hà Đông, Hà Nội</a></li>
+        <li><a href="tel:0912345678">📞 0912.345.678</a></li>
+        <li><a href="mailto:keolac@laodai.vn">✉️ keolac@laodai.vn</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Hỗ trợ</h4><ul>
+        <li><a href="#">Chính sách đổi trả</a></li>
+        <li><a href="#">Hướng dẫn đặt hàng</a></li>
+        <li><a href="#">Câu hỏi thường gặp</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Kẹo Lạc Lão Đại.</span>
+      <span>Thiết kế với ❤️ từ làng quê Việt Nam</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/orders-db.js"></script>
+<script src="js/products.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const STATUS_MAP = {
+    processing: { label: 'Đang xử lý', cls: 'processing', icon: '⏳' },
+    confirmed:  { label: 'Đã xác nhận', cls: 'confirmed',  icon: '✅' },
+    shipping:   { label: 'Đang giao',   cls: 'shipping',   icon: '🚚' },
+    delivered:  { label: 'Đã giao',     cls: 'delivered',  icon: '📦' },
+    cancelled:  { label: 'Đã hủy',      cls: 'cancelled',  icon: '❌' },
+  };
+  const PAYMENT_MAP = { cod: '💵 COD', transfer: '🏦 Chuyển khoản' };
+
+  let pendingDeleteId = null;
+  let searchQuery = '';
+  let statusFilter = 'all';
+
+  // ── Render orders ──
+  function renderOrders() {
+    const orders = window.OrderDB.getOrders();
+    let filtered = orders;
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(o =>
+        o.id.toLowerCase().includes(q) ||
+        o.name.toLowerCase().includes(q) ||
+        o.phone.includes(q) ||
+        (o.productName || '').toLowerCase().includes(q)
+      );
+    }
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(o => o.status === statusFilter);
+    }
+
+    // Stats (always from all orders)
+    updateStats(orders);
+
+    const content = document.getElementById('ordersContent');
+
+    if (!filtered.length) {
+      content.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">${orders.length ? '🔍' : '📭'}</div>
+          <h3>${orders.length ? 'Không tìm thấy đơn phù hợp' : 'Chưa có đơn hàng nào'}</h3>
+          <p>${orders.length ? 'Thử thay đổi từ khóa tìm kiếm.' : 'Đặt mua kẹo lạc ngay để thấy lịch sử đơn hàng.'}</p>
+          ${!orders.length ? '<a href="order.html" class="btn btn-primary btn-sm" style="margin-top:1.5rem;display:inline-flex;">🛒 Đặt ngay</a>' : ''}
+        </div>
+      `;
+      return;
+    }
+
+    content.innerHTML = `
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Mã đơn</th>
+            <th>Ngày đặt</th>
+            <th>Khách hàng</th>
+            <th>Sản phẩm</th>
+            <th>SL</th>
+            <th>Trạng thái</th>
+            <th>Tổng tiền</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filtered.map(o => renderOrderRow(o)).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function renderOrderRow(o) {
+    const s = STATUS_MAP[o.status] || STATUS_MAP.processing;
+    const date = new Date(o.date).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const canCancel = o.status === 'processing' || o.status === 'confirmed';
+
+    return `
+      <tr>
+        <td><span class="order-id-cell">${o.id}</span></td>
+        <td style="font-family:'Be Vietnam Pro',sans-serif;font-size:0.85rem;color:var(--text-muted);white-space:nowrap;">${date}</td>
+        <td>
+          <div style="font-weight:500;color:var(--text-main);">${o.name}</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);">${o.phone}</div>
+        </td>
+        <td class="order-product-cell">
+          <div>${o.productName || '—'}</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);">${o.productVariant || ''}</div>
+        </td>
+        <td style="text-align:center;font-weight:600;">${o.quantity}</td>
+        <td>
+          <span class="status-badge ${s.cls}">
+            <span class="status-dot"></span>
+            ${s.label}
+          </span>
+        </td>
+        <td class="total-cell">${formatPrice(o.total)}</td>
+        <td>
+          <div class="action-btns">
+            <button class="icon-btn" title="Xem chi tiết" onclick="viewOrderDetail('${o.id}')">👁️</button>
+            ${canCancel ? `<button class="icon-btn danger" title="Huỷ đơn" onclick="showDeleteModal('${o.id}')">🗑️</button>` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  function updateStats(orders) {
+    document.getElementById('statTotal').textContent = orders.length;
+    document.getElementById('statDelivered').textContent = orders.filter(o => o.status === 'delivered').length;
+    document.getElementById('statProcessing').textContent = orders.filter(o => ['processing','confirmed','shipping'].includes(o.status)).length;
+    const spent = orders.filter(o => o.status !== 'cancelled').reduce((s,o) => s + o.total, 0);
+    document.getElementById('statSpent').textContent = spent >= 1000000
+      ? (spent/1000000).toFixed(1) + 'M'
+      : formatPrice(spent);
+  }
+
+  // ── Order detail panel ──
+  function viewOrderDetail(id) {
+    const o = window.OrderDB.getOrders().find(o => o.id === id);
+    if (!o) return;
+    const s = STATUS_MAP[o.status] || STATUS_MAP.processing;
+    const date = new Date(o.date).toLocaleString('vi-VN');
+
+    document.getElementById('panelContent').innerHTML = `
+      <!-- Status badge -->
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <span class="status-badge ${s.cls}" style="font-size:0.95rem;padding:8px 20px;">
+          <span class="status-dot"></span>${s.icon} ${s.label}
+        </span>
+      </div>
+
+      <!-- Update status -->
+      <div class="detail-section">
+        <h4>Cập nhật trạng thái</h4>
+        <select id="statusUpdateSelect" class="form-control" style="margin-bottom:0.75rem;">
+          ${Object.entries(STATUS_MAP).map(([val,info]) => `
+            <option value="${val}" ${o.status === val ? 'selected' : ''}>${info.icon} ${info.label}</option>
+          `).join('')}
+        </select>
+        <button class="btn btn-moss btn-sm" onclick="applyStatusUpdate('${o.id}')">Lưu thay đổi</button>
+      </div>
+
+      <div class="detail-section">
+        <h4>Thông tin đơn hàng</h4>
+        <div class="detail-row"><span class="key">Mã đơn</span><span class="val" style="font-weight:700;color:var(--gold);">${o.id}</span></div>
+        <div class="detail-row"><span class="key">Ngày đặt</span><span class="val">${date}</span></div>
+        <div class="detail-row"><span class="key">Thanh toán</span><span class="val">${PAYMENT_MAP[o.payment] || o.payment}</span></div>
+      </div>
+
+      <div class="detail-section">
+        <h4>Thông tin khách hàng</h4>
+        <div class="detail-row"><span class="key">Họ tên</span><span class="val">${o.name}</span></div>
+        <div class="detail-row"><span class="key">SĐT</span><span class="val">${o.phone}</span></div>
+        <div class="detail-row"><span class="key">Địa chỉ</span><span class="val">${o.address}</span></div>
+        ${o.note ? `<div class="detail-row"><span class="key">Ghi chú</span><span class="val" style="font-style:italic;">${o.note}</span></div>` : ''}
+      </div>
+
+      <div class="detail-section">
+        <h4>Chi tiết sản phẩm</h4>
+        <div class="detail-row"><span class="key">Sản phẩm</span><span class="val">${o.productName}</span></div>
+        <div class="detail-row"><span class="key">Loại</span><span class="val">${o.productVariant}</span></div>
+        <div class="detail-row"><span class="key">Đơn giá</span><span class="val">${formatPrice(o.unitPrice)}</span></div>
+        <div class="detail-row"><span class="key">Số lượng</span><span class="val">${o.quantity}</span></div>
+        <div class="detail-row"><span class="key">Tạm tính</span><span class="val">${formatPrice(o.subtotal)}</span></div>
+        <div class="detail-row"><span class="key">Phí ship</span><span class="val">${o.shippingFee === 0 ? '<span style="color:var(--moss)">Miễn phí</span>' : formatPrice(o.shippingFee)}</span></div>
+        <div class="detail-row" style="font-weight:700;border-top:2px solid var(--border);margin-top:0.5rem;padding-top:0.75rem;">
+          <span class="key" style="color:var(--brown-deep);">TỔNG CỘNG</span>
+          <span class="val" style="color:var(--gold);font-family:'Playfair Display',serif;font-size:1.2rem;">${formatPrice(o.total)}</span>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('slidePanel').classList.add('open');
+    document.getElementById('panelBackdrop').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function applyStatusUpdate(id) {
+    const newStatus = document.getElementById('statusUpdateSelect').value;
+    window.OrderDB.updateOrderStatus(id, newStatus);
+    showToast('Cập nhật trạng thái thành công!', 'success');
+    renderOrders();
+    closePanel();
+  }
+
+  function closePanel() {
+    document.getElementById('slidePanel').classList.remove('open');
+    document.getElementById('panelBackdrop').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // ── Delete modal ──
+  function showDeleteModal(id) {
+    pendingDeleteId = id;
+    document.getElementById('deleteOrderId').textContent = id;
+    document.getElementById('deleteModal').classList.add('show');
+  }
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+    pendingDeleteId = null;
+  }
+  function confirmDelete() {
+    if (!pendingDeleteId) return;
+    window.OrderDB.deleteOrder(pendingDeleteId);
+    closeDeleteModal();
+    showToast('Đã huỷ đơn hàng ' + pendingDeleteId, 'success');
+    renderOrders();
+  }
+
+  // ── Search & filter ──
+  document.getElementById('searchInput').addEventListener('input', e => {
+    searchQuery = e.target.value;
+    renderOrders();
+  });
+  document.getElementById('statusFilter').addEventListener('change', e => {
+    statusFilter = e.target.value;
+    renderOrders();
+  });
+
+  // ── Export CSV ──
+  function exportCSV() {
+    const orders = window.OrderDB.getOrders();
+    if (!orders.length) { showToast('Không có đơn hàng để xuất!', 'warning'); return; }
+    const headers = ['Mã đơn','Ngày đặt','Tên KH','SĐT','Địa chỉ','Sản phẩm','Số lượng','Tổng tiền','Trạng thái'];
+    const rows = orders.map(o => [
+      o.id,
+      new Date(o.date).toLocaleDateString('vi-VN'),
+      o.name, o.phone, o.address,
+      `${o.productName} ${o.productVariant}`,
+      o.quantity,
+      o.total,
+      STATUS_MAP[o.status]?.label || o.status
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `DonHang_KeoLacLaoDai_${new Date().toLocaleDateString('vi-VN').replace(/\//g,'-')}.csv`;
+    a.click();
+    showToast('Xuất CSV thành công!', 'success');
+  }
+
+  // ── Seed sample orders ──
+  function seedSampleOrders() {
+    const samples = [
+      { name: 'Nguyễn Văn Hùng', phone: '0901234567', address: '12 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội', productId: 'mat-mia-500', qty: 2, status: 'delivered' },
+      { name: 'Trần Thị Lan', phone: '0912345678', address: '45 Nguyễn Huệ, Quận 1, TP.HCM', productId: 'vung-den-250', qty: 3, status: 'shipping' },
+      { name: 'Lê Minh Tuấn', phone: '0932156789', address: '8 Trần Phú, Hải Châu, Đà Nẵng', productId: 'hop-qua-500', qty: 1, status: 'confirmed' },
+      { name: 'Phạm Thu Hà', phone: '0945678901', address: '78 Lê Lợi, Thành phố Huế', productId: 'mat-mia-1kg', qty: 1, status: 'processing' },
+      { name: 'Võ Thành Nam', phone: '0978901234', address: '23 Phan Đình Phùng, Vũng Tàu', productId: 'gung-250', qty: 4, status: 'delivered' },
+    ];
+    samples.forEach((s, i) => {
+      const p = window.PRODUCTS.find(p => p.id === s.productId);
+      if (!p) return;
+      const subtotal = p.price * s.qty;
+      const ship = subtotal >= 200000 ? 0 : 30000;
+      const date = new Date(Date.now() - (i * 2 + 1) * 24 * 3600 * 1000).toISOString();
+      window.OrderDB.saveOrder({
+        id: window.OrderDB.generateOrderId(),
+        date, status: s.status,
+        name: s.name, phone: s.phone, address: s.address, note: '',
+        payment: i % 2 === 0 ? 'cod' : 'transfer',
+        productId: p.id, productName: p.name, productVariant: p.variant,
+        unitPrice: p.price, quantity: s.qty, subtotal,
+        shippingFee: ship, total: subtotal + ship,
+      });
+    });
+    showToast('Đã tạo 5 đơn hàng mẫu!', 'success');
+    document.getElementById('seedBtn').textContent = '✅ Đã tạo mẫu';
+    document.getElementById('seedBtn').disabled = true;
+    renderOrders();
+  }
+
+  // ── Init ──
+  renderOrders();
+</script>
+</body>
+</html>
