@@ -13,7 +13,7 @@ window.PRODUCTS = [
     id: 'mat-mia-250',
     name: 'Kẹo Lạc Mật Mía',
     variant: '250g',
-    price: 45000,
+    price: 30000,
     originalPrice: 55000,
     badge: 'Bán chạy',
     badgeType: 'hot',
