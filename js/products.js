@@ -20,7 +20,7 @@ window.PRODUCTS = [
     desc: 'Vị ngọt thanh của mật mía hòa quyện cùng lạc rang thơm bùi.',
     category: 'mat-mia',
     featured: true,
-    img: 'assets/products_flatlay.png',
+    img: 'assets/unnamed.jpg',
     imgPos: 'center top',
     details: {
       ingredients: 'Lạc đỏ, mật mía, muối tinh',
